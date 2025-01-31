@@ -51,6 +51,7 @@
 .gallery-top {
   width: 100%;
   height: 152px;
+  /* висота згідно макетуб але можна 252px(красивіше) */
 }
 .gallery-img {
   width: 100%;
