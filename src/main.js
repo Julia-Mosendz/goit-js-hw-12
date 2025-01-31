@@ -30,6 +30,7 @@ async function onSearchSubmit(event) {
   galleryEl.innerHTML = '';
   currentPage = 1;
   loaderEl.classList.remove('is-hidden');
+  loadMoreBtnEl.classList.add('is-hidden');
 
   try {
     const { hits, totalHits } = await getPhotos(searchQuery, currentPage);
@@ -55,17 +56,24 @@ async function onSearchSubmit(event) {
 
 async function onLoadMoreBtnClick() {
   currentPage += 1;
-  const { hits } = await getPhotos(searchQuery, currentPage);
-  renderGallery(hits);
+  loaderEl.classList.remove('is-hidden');
+  try {
+    const { hits } = await getPhotos(searchQuery, currentPage);
+    renderGallery(hits);
 
-  if (currentPage >= totalPages) {
-    loadMoreBtnEl.classList.add('is-hidden');
-    iziToast.warning({
-      message: "We're sorry, but you've reached the end of search results.",
-      position: 'topRight',
-    });
+    if (currentPage >= totalPages) {
+      loadMoreBtnEl.classList.add('is-hidden');
+      iziToast.warning({
+        message: "We're sorry, but you've reached the end of search results.",
+        position: 'topRight',
+      });
+    }
+    onScrollPage(galleryEl.firstElementChild);
+  } catch (error) {
+    console.log(error);
+  } finally {
+    loaderEl.classList.add('is-hidden');
   }
-  onScrollPage(galleryEl.firstElementChild);
 }
 
 function onScrollPage(element) {
